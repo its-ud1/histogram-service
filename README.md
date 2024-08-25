@@ -101,13 +101,18 @@ This project implements an asynchronous web service that manages a histogram. Th
 - for running tests for histogram.py give terminal command: pytest .\test_histogram.py (for windows)
 - for running tests for main.py give terminal command: pytest .\test_main.py (for windows)
 
-- **Test Results**
-- [test_histogram.py](histogram-service\images\ss2.png)
-- [test_main.py](histogram-service\images\ss1.png)
+### Test Results
 
-- ## List of installed packages (pip list for venv)
-Package           Version
------------------ --------
+- **Test for `test_histogram.py`**:
+
+    ![test_histogram.py](histogram-service/images/ss2.png)
+
+- **Test for `test_main.py`**:
+
+    ![test_main.py](histogram-service/images/ss1.png)
+
+
+- ### List of installed packages (pip list for venv)
 annotated-types   0.7.0
 anyio             4.4.0
 asyncio           3.4.3
