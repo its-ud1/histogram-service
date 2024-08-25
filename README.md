@@ -6,11 +6,15 @@ This project implements an asynchronous web service that manages a histogram. Th
 
 ### Key Features
 
-- **Thread-Safe Histogram**: Manages intervals and samples in a thread-safe manner.
+- Mean and Variance are calculated in constant time ( O(1) ).
+- Used Binary-Search for frequency calclation in the sorted interval list bought down the complexity from O(n) --> O(log n)
+- Precalculated the Invalid intervals and Overlapped intervals to reduce the redundant computation on each API call
+- Used fixtures to mock the service calls to reject and return the response artifically depending on the scenario
+- Unittest covering the possible scenarios of samples adding 
+- **Thread-Safe Histogram**: Manages intervals and samples in a thread-safe manner to avoid race conditions.
 - **Asynchronous Endpoints**: Provides asynchronous API endpoints for inserting samples and retrieving metrics.
 - **Resilient to Errors**: Handles erroneous input data by discarding invalid intervals or samples.
 - **Real-Time Metrics**: Calculates and returns the sample mean, variance, and outliers.
-
 ## Installation
 
 ### Prerequisites
@@ -31,6 +35,7 @@ This project implements an asynchronous web service that manages a histogram. Th
 2. **Create a Virtual Environment** (optional but recommended):
     ```bash
     python -m venv venv
+    Set-ExecutionPolicy Unrestricted -Scope Process # (optional) needed in my case (windows) to enable virtual env creation on your local machine
     source venv/bin/activate  # On Windows, use `venv\Scripts\activate`
     ```
 
@@ -45,7 +50,7 @@ This project implements an asynchronous web service that manages a histogram. Th
 
 1. **Start the Web Service**:
     ```bash
-    uvicorn app.main:app --reload
+    uvicorn app.main:app --host localhost --port 8000 --reload
     ```
 
 2. **Access the API**:
@@ -57,7 +62,7 @@ This project implements an asynchronous web service that manages a histogram. Th
 
 ### Configuration
 
-- **Input File**: The service reads intervals from a file located in `utility/intervals.txt`.
+- **Input File**: The service reads intervals from a file located in `assets/intervals.txt`.
 
 ### API Endpoints
 
@@ -75,15 +80,17 @@ This project implements an asynchronous web service that manages a histogram. Th
   - Example response:
     ```json
     {
-        "interval_counts": {
-            "[0, 1.1)": 1,
-            "[3, 4.1)": 0,
-            "[8.5, 8.7)": 0,
-            "[31.5, 41.27)": 2
-        },
-        "sample_mean": 24.203,
-        "sample_variance": 422.243,
-        "outliers": "4.2, 8.1, 8.2, 30, 41.27"
+        "metrics": {
+                "interval_counts": {
+                "[0, 1.1)": 1,
+                "[3, 4.1)": 0,
+                "[8.5, 8.7)": 0,
+                "[31.5, 41.27)": 2
+            },
+            "sample_mean": 24.203,
+            "sample_variance": 422.243,
+            "outliers": [4.2, 8.1, 8.2, 30, 41.27]
+        }
     }
     ```
 

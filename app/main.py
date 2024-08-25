@@ -16,7 +16,7 @@ async def insert_samples(request: SampleRequest):
     histogram_service.insert_samples(request.samples)
     return JSONResponse(
         status_code=200,
-        content={"status": "success", "message": "Samples inserted successfully"}
+        content={"message": "Samples inserted successfully"}
     )
 
 @app.get("/metrics")
@@ -24,5 +24,5 @@ async def get_metrics():
     metrics = histogram_service.get_metrics()
     return JSONResponse(
         status_code=200,  # or use status.HTTP_200_OK
-        content={"status": "success", "metrics": metrics}
+        content={"metrics": metrics}
     )

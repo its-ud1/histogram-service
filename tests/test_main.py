@@ -25,7 +25,6 @@ async def test_insert_samples(mock_histogram_service):
         response = await ac.post("/insertSamples", json=valid_payload)
         assert response.status_code == 200
         assert response.json() == {
-            "status": "success",
             "message": "Samples inserted successfully"
         }
         mock_histogram_service.insert_samples.assert_called_once_with([1.5, 2.3, 3.7])
