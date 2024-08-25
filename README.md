@@ -94,9 +94,18 @@ This project implements an asynchronous web service that manages a histogram. Th
     }
     ```
 
-## Project Structure
+### Testing env setup
+- (make sure) all the requirements written in requirments.txt should be installed
+- Take a new terminal in venv
+- move to the tests folder from histogram_service by command (cd /tests)
+- for running tests for histogram.py give terminal command: pytest .\test_histogram.py (for windows)
+- for running tests for main.py give terminal command: pytest .\test_main.py (for windows)
 
-- ## List of installed packages 
+- **Test Results**
+- [test_histogram.py](histogram-service\images\ss2.png)
+- [test_main.py](histogram-service\images\ss1.png)
+
+- ## List of installed packages (pip list for venv)
 Package           Version
 ----------------- --------
 annotated-types   0.7.0

@@ -20,9 +20,8 @@ class Histogram:
         return self.__total_samples
     
     def add_interval(self, interval: tuple[float, float]):
-        with self.lock:
-            self.__intervals.append(interval)
-            self.__counts[interval] = 0
+        self.__intervals.append(interval)
+        self.__counts[interval] = 0
 
     def __binary_search_in_intervals(self, sample: float) -> int:
         low, high = 0, len(self.__intervals) - 1
@@ -37,8 +36,8 @@ class Histogram:
         return -1
     
     def __insert_sample(self, sample: float):
+        index = self.__binary_search_in_intervals(sample) #not sure weather to include or exclude it in self.lock() ??
         with self.lock:
-            index = self.__binary_search_in_intervals(sample)
             if index != -1:
                 interval = self.__intervals[index]
                 self.__counts[interval] += 1
@@ -66,14 +65,13 @@ class Histogram:
             raise HTTPException(status_code = 500, detail = "Invalid intervals found, please correct the intervals in intervals.txt file.")
         if(self.__is_operlapping_intervals):
             raise HTTPException(status_code = 500, detail = "Overlapping intervals found, please correct the intervals in intervals.txt file.")
-        with self.lock:
-            interval_stats = {str(interval).replace('(','['): count for interval, count in self.__counts.items()}
-            metrics = {
-                "interval_counts": interval_stats,
-                "sample_mean": round(self.__mean, 3),
-                "sample_variance": round(self.__variance, 3),
-                "outliers": self.__outliers
-            }
+        interval_stats = {str(interval).replace('(','['): count for interval, count in self.__counts.items()}
+        metrics = {
+            "interval_counts": interval_stats,
+            "sample_mean": round(self.__mean, 3),
+            "sample_variance": round(self.__variance, 3),
+            "outliers": self.__outliers
+        }
         return metrics
     
     def __has_operlapping_intervals(self) -> bool:

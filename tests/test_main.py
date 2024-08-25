@@ -1,6 +1,7 @@
 import pytest
 from unittest.mock import AsyncMock, MagicMock
 from httpx import AsyncClient
+from fastapi.testclient import TestClient
 from app.main import app  # Import your FastAPI app
 
 # Mocking the HistogramService
@@ -8,7 +9,7 @@ from app.main import app  # Import your FastAPI app
 def mock_histogram_service(monkeypatch):
     mock_service = MagicMock()
     mock_service.insert_samples = AsyncMock()
-    mock_service.get_metrics = AsyncMock(return_value={
+    mock_service.get_metrics = MagicMock(return_value={
         "interval_counts": {}, 
         "sample_mean": 0.0, 
         "sample_variance": 0.0, 
@@ -42,19 +43,29 @@ async def test_insert_samples(mock_histogram_service):
         assert response.status_code == 422
         mock_histogram_service.insert_samples.assert_called_once()  # No new call should be made
 
-# @pytest.mark.asyncio
-# async def test_get_metrics(mock_histogram_service):
-#     async with AsyncClient(app=app, base_url="http://test") as ac:
-#         response = await ac.get("/metrics")
-#         assert response.status_code == 200
-#         assert response.json() == {
-#             "status": "success",
-#             "metrics": {
-#                 "interval_counts": {},
-#                 "sample_mean": 0.0,
-#                 "sample_variance": 0.0,
-#                 "outliers": []
-#             }
-#         }
-#         # Correctly await the async mock call
-#         await mock_histogram_service.get_metrics.assert_called_once()
+
+
+client = TestClient(app)
+
+def test_get_metrics(mock_histogram_service):
+    # Mocking the return value of the service method
+    mock_histogram_service.get_metrics.return_value = {
+        "interval_counts": {},
+        "sample_mean": 0.0,
+        "sample_variance": 0.0,
+        "outliers": []
+    }
+    
+    response = client.get("/metrics")
+    assert response.status_code == 200
+    assert response.json() == {
+        "metrics": {
+            "interval_counts": {},
+            "sample_mean": 0.0,
+            "sample_variance": 0.0,
+            "outliers": []
+        }
+    }
+    
+    # Ensure that the service method was called once
+    mock_histogram_service.get_metrics.assert_called_once()
