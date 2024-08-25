@@ -1,0 +1,12 @@
+fastapi
+uvicorn
+numpy
+pytest
+python-dotenv == 1.0.1
+pytest
+httpx
+anyio == 4.4.0
+asyncio == 3.4.3 
+Twisted == 24.7.0
+pytest-asyncio == 0.24.0
+pytest-twisted == 1.14.2
