@@ -103,7 +103,7 @@ This project implements an asynchronous web service that manages a histogram. Th
 
 ### Test Results
 
-- **Test for `test_histogram.py`**:
+- **Test for `histogram.py`**:
 
     ![histogram.py](https://github.com/its-ud1/histogram-service/blob/master/images/ss2.png)
 
