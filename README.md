@@ -107,7 +107,7 @@ This project implements an asynchronous web service that manages a histogram. Th
 
     ![histogram.py](https://github.com/its-ud1/histogram-service/blob/master/images/ss2.png)
 
-- **Test for `test_main.py`**:
+- **Test for `main.py`**:
 
     ![main.py](https://github.com/its-ud1/histogram-service/blob/master/images/ss1.png)
 
