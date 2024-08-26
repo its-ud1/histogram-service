@@ -63,6 +63,7 @@ This project implements an asynchronous web service that manages a histogram. Th
 ### Configuration
 
 - **Input File**: The service reads intervals from a file located in `assets/intervals.txt`.
+- **.env**: although it consists secrets but in this case we can set up this referring the repo and provide the file relative path
 
 ### API Endpoints
 
@@ -88,7 +89,7 @@ This project implements an asynchronous web service that manages a histogram. Th
                 "[31.5, 41.27)": 2
             },
             "sample_mean": 24.203,
-            "sample_variance": 422.243,
+            "sample_variance": 281.495,
             "outliers": [4.2, 8.1, 8.2, 30, 41.27]
         }
     }
