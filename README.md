@@ -105,11 +105,11 @@ This project implements an asynchronous web service that manages a histogram. Th
 
 - **Test for `test_histogram.py`**:
 
-    ![test_histogram.py](https://github.com/its-ud1/histogram-service/blob/master/images/ss2.png)
+    ![histogram.py](https://github.com/its-ud1/histogram-service/blob/master/images/ss2.png)
 
 - **Test for `test_main.py`**:
 
-    ![test_main.py](https://github.com/its-ud1/histogram-service/blob/master/images/ss1.png)
+    ![main.py](https://github.com/its-ud1/histogram-service/blob/master/images/ss1.png)
 
 
 - ### List of installed packages (pip list for venv)

@@ -6,12 +6,12 @@ from dotenv import load_dotenv
 
 load_dotenv() #loading the enviorment
 
-class HistogramService:
+class HistogramService: #service --> for seperating the business logic from the controller and the class 
     def __init__(self):
         self.histogram = Histogram() #injecting the histogram instance in the service layer 
         self.load_intervals_from_file()
 
-    def load_intervals_from_file(self):
+    def load_intervals_from_file(self): # getting the file absolute location using the .env file and starts parsing
         file_rel_path = os.getenv("INTERVAL_FILE_PATH", "intervals.txt") # not working from .env config
         file_path = Path(__file__).parent.parent.parent / file_rel_path
         try:
@@ -24,11 +24,11 @@ class HistogramService:
                             self.histogram.add_interval(interval)
                 self.histogram.post_parse_operations()
         except FileNotFoundError:
-            raise FileNotFoundError(f"Interval file not found: {file_path}")
+            raise FileNotFoundError(f"Interval file not found on location : {file_path}")
         except Exception as e:
             raise RuntimeError(f"Error loading intervals: {e}")
 
-    def parse_interval(self, line: str):
+    def parse_interval(self, line: str): #reading each line and validating
         try:
             start, end = line.strip("[]()").split(',')
             start = float(start)

@@ -1,25 +1,25 @@
 from typing import List, Tuple
-from fastapi import FastAPI, HTTPException
+from fastapi import HTTPException
 import threading
 
 class Histogram:
     def __init__(self):
-        self.__intervals = []
-        self.__counts = {}
-        self.__total_samples = 0
-        self.__sum_samples = 0.0
-        self.__sum_squares = 0.0
-        self.__outliers = []
-        self.__mean = 0.0
-        self.__variance = 0.0
-        self.__is_operlapping_intervals = False
-        self.__is_invalid_interval = False
+        self.__intervals = [] # stores the unoverlapped and valid intervals getting by reading the intervals.txt file
+        self.__counts = {} # dictionary storing the frequesncy of elements occoured in the perticular interval range key = interval, value = frequency
+        self.__total_samples = 0 # total number of samples falls under the given list of intervals 
+        self.__sum_samples = 0.0 # cumulative sum of the samples falling in the interval range 
+        self.__sum_squares = 0.0 # squared sum of the samples falling in the interval range
+        self.__outliers = [] # list of samples falling outside the interval range
+        self.__mean = 0.0 # mean of all the samples falling under interval range
+        self.__variance = 0.0 #variance of all the samples falling under interval range
+        self.__is_operlapping_intervals = False #flag denoting weather the intervals are overlapping or not
+        self.__is_invalid_interval = False # flag denoting weather the interval coming from the intervals.tx file in valid or not
         self.lock = threading.Lock()  # for thread safety
 
-    def get_total_samples(self):
-        return self.__total_samples
+    def get_total_samples(self): #for accessing the private variable
+        return self.__total_samples 
     
-    def add_interval(self, interval: tuple[float, float]):
+    def add_interval(self, interval: tuple[float, float]): #adding the tuple of interval in the intervals list
         self.__intervals.append(interval)
         self.__counts[interval] = 0
 
@@ -37,7 +37,7 @@ class Histogram:
     
     def __insert_sample(self, sample: float):
         index = self.__binary_search_in_intervals(sample) #not sure weather to include or exclude it in self.lock() ??
-        with self.lock:
+        with self.lock: ## ensuring thread safety while encountering simultaneous access of this function 
             if index != -1:
                 interval = self.__intervals[index]
                 self.__counts[interval] += 1
@@ -54,7 +54,8 @@ class Histogram:
             raise HTTPException(status_code = 500, detail = "Overlapping intervals found, please correct the intervals in intervals.txt file.")
         for sample in samples:
             self.__insert_sample(sample)
-        #post insert operations 
+
+        #post insert operations for calculating the mean and variance for the new samples collected till now
         if self.__total_samples != 0:
             self.__mean = self.__sum_samples / self.__total_samples
             self.__variance = (self.__sum_squares / self.__total_samples) - (self.__mean ** 2)
@@ -75,7 +76,7 @@ class Histogram:
         return metrics
     
     def __has_operlapping_intervals(self) -> bool:
-        # intervals are are already sorted in post parse operation so it saves one step
+        # intervals are already sorted in post parse operation so it saves one step
         for i in range(1, len(self.__intervals)):
             if self.__intervals[i][0] < self.__intervals[i-1][1]:
                 return True
@@ -88,7 +89,7 @@ class Histogram:
                 return True
         return False
 
-    def post_parse_operations(self):
+    def post_parse_operations(self): #after reading the whole file we are sorting the collected lists and dictionaries which will help in optimized search operations and generating cleaner response 
         self.__intervals.sort()  # Keeping intervals sorted
         self.__is_operlapping_intervals = self.__has_operlapping_intervals()
         self.__is_invalid_interval = self.__has_invalid_interval()
